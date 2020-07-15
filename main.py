@@ -6,6 +6,8 @@ import math
 
 
 def cleanse_data(df):
+    df["Date"] = pd.to_datetime(df["Date"])
+    df = df.loc[df.Ticker == "XXY"].sort_values(by="Date")[["Adj Close"]]
     # Your task here is to remove data from any ticker that isn't XXY, sort chronologically and return a dataframe
     # whose only column is 'Adj Close'
     dfclean = df
@@ -36,10 +38,14 @@ def mc_sim(sims, days, df):
             count += 1
 
         simulation_df[x] = price_series
+        
+    mean = simulation_df.loc[days,].mean()
+    std = simulation_df.loc[days,].std()
+    conf_intveral = stats.norm.interval(0.95, loc=mean, scale=std)
 
     # FILL OUT THE REST OF THE CODE. The above code has given you 'sims' of simulations run 'days' days into the future.
     # Your task is to return the expected price on the last day +/- the 95% confidence interval.
-    return
+    return mean, conf_intveral
 
 def main():
     filename = '20192020histdata.csv'
